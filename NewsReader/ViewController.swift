@@ -164,6 +164,7 @@ extension ViewController: UICollectionViewDataSource {
             //获取重用的单元格
             return cell
         }else{
+            let content = viewModel.contents[indexPath.row]
             let img = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCellID, for: indexPath) as! ImageCollectionViewCell
             let imgs = imageURLsForPresent
             print(imgs)
@@ -177,6 +178,7 @@ extension ViewController: UICollectionViewDataSource {
                 
                 DispatchQueue.main.async {
                     img.image.image = UIImage(data: data!)
+                    img.title.text = content.newsTitle
                 }
             }).resume()
 //            img.image.image = UIImage(data: img[0])
