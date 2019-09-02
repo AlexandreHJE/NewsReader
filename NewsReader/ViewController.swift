@@ -48,6 +48,8 @@ class ViewController: UIViewController {
     
     @IBAction func clickBTN(_ sender: Any) {
 //        print(self.viewModel.contents)
+//        print("ImageLink")
+//        print(self.viewModel.imageLinks)
         for c in self.viewModel.contents {
             //imgs成功取值
             if let imgs = c.relatedPictures?.extractURLs() {
@@ -105,7 +107,7 @@ class ViewController: UIViewController {
         imageFlowLayout!.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         
         imageGalleryFlowLayout = ImageCollectionViewFlowLayout()
-        imageGalleryCollectionView = UICollectionView(frame: CGRect(x: 0, y: 120, width: view.frame.width, height: 250), collectionViewLayout: imageGalleryFlowLayout!)
+        imageGalleryCollectionView = UICollectionView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 250), collectionViewLayout: imageGalleryFlowLayout!)
         
         imageGalleryCollectionView!.delegate = self
         imageGalleryCollectionView!.dataSource = self
@@ -115,7 +117,7 @@ class ViewController: UIViewController {
         imageGalleryCollectionView!.register(cellXIB, forCellWithReuseIdentifier: ImageCellID)
         
         //将Collection View添加到主视图中
-        view.addSubview(imageGalleryCollectionView!)
+//        view.addSubview(imageGalleryCollectionView!)
     }
 
     private func initTableView() {
@@ -126,7 +128,7 @@ class ViewController: UIViewController {
         self.tableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         self.tableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         self.tableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        self.tableView.sectionHeaderHeight = 100
+        self.tableView.sectionHeaderHeight = 250
     }
 }
 
@@ -219,8 +221,9 @@ extension ViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let returnUIView = UIView()
-        returnUIView.backgroundColor = .yellow
-        returnUIView.frame = CGRect(x: 0, y: 0, width: Int(self.tableView.frame.width), height: 100)
+        initGalleryView()
+        returnUIView.addSubview(imageGalleryCollectionView!)
+//        returnUIView.backgroundColor = .yellow
         return returnUIView
 //        return imageGalleryCollectionView
     }

@@ -19,6 +19,16 @@ class MainPageViewModel {
         }
     }
     
+    //目前塞不進資料
+    private(set) var imageLinks = [URL]() {
+        didSet {
+            imageLinks = contents
+                .map({ (dictionary) -> URL in
+                    return dictionary.relatedPictures?.extractURLs().first ?? URL(string: "")!
+                })
+        }
+    }
+    
 //    private(set) var contentTable = [String: NewsContent]() {
 //        didSet {
 //            contents = contentTable
