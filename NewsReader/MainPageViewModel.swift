@@ -19,13 +19,21 @@ class MainPageViewModel {
         }
     }
     
-    //目前塞不進資料
+    //缺若點選更新時，此資料陣列應該要跟著刷新
     private(set) var imageLinks = [URL]() {
         didSet {
-            imageLinks = contents
-                .map({ (dictionary) -> URL in
-                    return dictionary.relatedPictures?.extractURLs().first ?? URL(string: "")!
-                })
+            for c in contents {
+                if let imgs = c.relatedPictures?.extractURLs() {
+                    //陣列內容數不為零
+                    if imgs.count != 0 {
+                        //取回傳圖片位址陣列的第一個當作要用的
+                        imageLinks.append(imgs[0])
+                    }else{
+                        //若無則用預設圖片(之後應該要修改 改用本地端圖片省流量)
+                        imageLinks.append(URL(string: "https://i.imgur.com/RHV00nR.jpg")!)
+                    }
+                }
+            }
         }
     }
     

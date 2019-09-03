@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class ViewController: UIViewController {
     
     lazy var tableView: UITableView = {
@@ -18,7 +19,6 @@ class ViewController: UIViewController {
         return tableView
     }()
 
-    
     
     var imageURLsForPresent: [URL] = []
     
@@ -32,6 +32,9 @@ class ViewController: UIViewController {
     var newsGroupFlowLayout: NewsGroupCollectionViewFlowLayout?
     let NewsGroupCellID = "NewsGroupCell"
     
+    var selectedRow = 0
+    var webViewLink = ""
+    
     private let viewModel = MainPageViewModel()
     
     override func viewDidLoad() {
@@ -43,6 +46,7 @@ class ViewController: UIViewController {
         //API回應時間比較慢 一開始內容為空陣列
 //        print(self.viewModel.contents)
         initCollectionView()
+        
 
     }
     
@@ -84,7 +88,7 @@ class ViewController: UIViewController {
     private func initCollectionView() {
         
         newsFlowLayout = UICollectionViewFlowLayout()
-        newsFlowLayout!.itemSize = CGSize(width: 40, height: 30)
+        newsFlowLayout!.itemSize = CGSize(width: 20, height: 30)
         newsFlowLayout!.sectionInset = UIEdgeInsets(top: 74, left: 0, bottom: 0, right: 0)
 
         newsGroupFlowLayout = NewsGroupCollectionViewFlowLayout()
@@ -92,13 +96,44 @@ class ViewController: UIViewController {
         
         newsGroupCollectionView!.delegate = self
         newsGroupCollectionView!.dataSource = self
-        newsGroupCollectionView!.backgroundColor = .blue
+        newsGroupCollectionView!.backgroundColor = .lightGray
         
         let cellXIB = UINib.init(nibName: "NewsGroupCollectionViewCell", bundle: Bundle.main)
         newsGroupCollectionView!.register(cellXIB, forCellWithReuseIdentifier: NewsGroupCellID)
+        newsGroupCollectionView!.showsHorizontalScrollIndicator = false
         
         //将Collection View添加到主视图中
         view.addSubview(newsGroupCollectionView!)
+        
+        let tapRecognizer = UITapGestureRecognizer(target: self,
+                                                   action: #selector(ViewController.handleTap(_:)))
+        newsGroupCollectionView!.addGestureRecognizer(tapRecognizer)
+        
+    }
+
+    @objc func handleTap(_ sender:UITapGestureRecognizer){
+        if sender.state == UIGestureRecognizer.State.ended{
+            let tapPoint = sender.location(in: self.newsGroupCollectionView!)
+            //点击的是单元格元素
+            if let  indexPath = self.newsGroupCollectionView!.indexPathForItem(at: tapPoint) {
+                //通过performBatchUpdates对collectionView中的元素进行批量的插入，删除，移动等操作
+                //同时该方法触发collectionView所对应的layout的对应的动画。
+                self.newsGroupCollectionView!.performBatchUpdates({ () -> Void in
+                    print("tap \(indexPath.row) cell")
+//                    self.collectionView.deleteItems(at: [indexPath])
+//                    self.images.remove(at: indexPath.row)
+                }, completion: nil)
+                
+            }
+                //点击的是空白位置
+            else{
+                print("tap empty place.")
+                //新元素插入的位置（开头）
+//                let index = 0
+//                images.insert("xcode.png", at: index)
+//                self.collectionView.insertItems(at: [IndexPath(item: index, section: 0)])
+            }
+        }
     }
     
     private func initGalleryView() {
@@ -115,7 +150,7 @@ class ViewController: UIViewController {
         
         let cellXIB = UINib.init(nibName: "ImageCollectionViewCell", bundle: Bundle.main)
         imageGalleryCollectionView!.register(cellXIB, forCellWithReuseIdentifier: ImageCellID)
-        
+        imageGalleryCollectionView!.showsHorizontalScrollIndicator = false
         //将Collection View添加到主视图中
 //        view.addSubview(imageGalleryCollectionView!)
     }
@@ -194,7 +229,14 @@ extension ViewController: UICollectionViewDataSource {
 extension ViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("Did select element: \(indexPath.row)")
+        let cell = collectionView.cellForItem(at: indexPath)
         
+        cell?.backgroundColor = .yellow
+//        cell?.backgroundView?.backgroundColor = .yellow
+//        cell?.contentView.layer.borderWidth = 2.0
+//        cell?.contentView.layer.borderColor = UIColor.yellow.cgColor
+//        cell?.layer.borderWidth = 2.0
+//        cell?.layer.borderColor = UIColor.yellow.cgColor
     }
     
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
@@ -203,6 +245,7 @@ extension ViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
         print("Highlighting at: \(indexPath.row)")
+        selectedRow = indexPath.row
     }
 }
 
@@ -215,6 +258,12 @@ extension ViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("click table cell: \(indexPath.row)")
+        selectedRow = indexPath.row
+        webViewLink = viewModel.contents[indexPath.row+5].source!
+//        print(webViewLink)
+        let webView = storyboard?.instantiateViewController(withIdentifier: "WebVC") as! WebViewController
+        webView.mainViewController = self
+        show(webView, sender: self)
     }
 }
 

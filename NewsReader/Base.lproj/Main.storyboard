@@ -47,7 +47,40 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="137.68115942028987" y="79.6875"/>
+            <point key="canvasLocation" x="165" y="92"/>
+        </scene>
+        <!--Web View Controller-->
+        <scene sceneID="W3r-pt-PqX">
+            <objects>
+                <viewController storyboardIdentifier="WebVC" id="nYP-R8-5x9" customClass="WebViewController" customModule="NewsReader" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="n3c-1v-jaN">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0qV-F7-PXE">
+                                <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <items>
+                                    <navigationItem leftItemsSupplementBackButton="YES" id="cdb-sL-w2d">
+                                        <barButtonItem key="leftBarButtonItem" systemItem="done" id="jp0-xi-YDX">
+                                            <connections>
+                                                <action selector="cancelBtn:" destination="nYP-R8-5x9" id="Jxm-rg-UGg"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="ggK-2B-ZTH"/>
+                    </view>
+                    <connections>
+                        <outlet property="naviBar" destination="0qV-F7-PXE" id="jIw-G5-KnF"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gIf-yI-S2c" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1104" y="92"/>
         </scene>
     </scenes>
 </document>

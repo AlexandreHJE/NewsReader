@@ -26,6 +26,7 @@
 		A2F4A9C523191A1500EA36E9 /* ImageCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F4A9C423191A1500EA36E9 /* ImageCollectionViewFlowLayout.swift */; };
 		A2F4A9CB231B646900EA36E9 /* NewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F4A9C9231B646900EA36E9 /* NewsTableViewCell.swift */; };
 		A2F4A9CC231B646900EA36E9 /* NewsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A2F4A9CA231B646900EA36E9 /* NewsTableViewCell.xib */; };
+		A2F4A9CE231E9CAE00EA36E9 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F4A9CD231E9CAE00EA36E9 /* WebViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@
 		A2F4A9C423191A1500EA36E9 /* ImageCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		A2F4A9C9231B646900EA36E9 /* NewsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTableViewCell.swift; sourceTree = "<group>"; };
 		A2F4A9CA231B646900EA36E9 /* NewsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewsTableViewCell.xib; sourceTree = "<group>"; };
+		A2F4A9CD231E9CAE00EA36E9 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,12 +108,13 @@
 				A2F4A9B723181EE100EA36E9 /* CustomUI */,
 				A28124FD23178EFC0096CA56 /* AppDelegate.swift */,
 				A28124FF23178EFC0096CA56 /* ViewController.swift */,
+				A281250123178EFC0096CA56 /* Main.storyboard */,
+				A2F4A9CD231E9CAE00EA36E9 /* WebViewController.swift */,
 				A281251D23178F680096CA56 /* DataManager.swift */,
 				A2F4A9B52318067700EA36E9 /* ImageURLMatcher.swift */,
 				A28125212317FF800096CA56 /* MainPageViewModel.swift */,
 				A281251F23178F9C0096CA56 /* ApiModel.swift */,
 				A2F4A9BC2318D98900EA36E9 /* NewsTypes.swift */,
-				A281250123178EFC0096CA56 /* Main.storyboard */,
 				A281250423178EFF0096CA56 /* Assets.xcassets */,
 				A281250623178EFF0096CA56 /* LaunchScreen.storyboard */,
 				A281250923178EFF0096CA56 /* Info.plist */,
@@ -282,6 +285,7 @@
 				A28125222317FF800096CA56 /* MainPageViewModel.swift in Sources */,
 				A2F4A9C523191A1500EA36E9 /* ImageCollectionViewFlowLayout.swift in Sources */,
 				A281251E23178F680096CA56 /* DataManager.swift in Sources */,
+				A2F4A9CE231E9CAE00EA36E9 /* WebViewController.swift in Sources */,
 				A28124FE23178EFC0096CA56 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
