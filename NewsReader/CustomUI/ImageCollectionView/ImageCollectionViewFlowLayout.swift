@@ -52,17 +52,16 @@ class ImageCollectionViewFlowLayout: UICollectionViewFlowLayout {
                                       height: self.collectionView!.frame.height)
             
             //当前屏幕中点，相对于collect view上的x坐标
-            let centerX = self.collectionView!.contentOffset.x
-                + self.collectionView!.bounds.width / 2
+//            let centerX = self.collectionView!.contentOffset.x+ self.collectionView!.bounds.width / 2
             
             //这个是为了计算缩放比例的
-            let maxDeviation = self.collectionView!.bounds.width / 2 + itemWidth / 2
+//            let maxDeviation = self.collectionView!.bounds.width / 2 + itemWidth / 2
             
             for attributes in array! {
                 //与可见区域做碰撞，如果该单元格没显示则直接跳过
                 if !visiableRect.intersects(attributes.frame) {continue}
                 //显示的单元根据偏移量决定放大倍数（最大放大1.8倍，而离屏幕中央越远的单元格缩放的越小）
-                let scale = CGFloat(1.0) + (0.8 - abs(centerX - attributes.center.x) / maxDeviation)
+                let scale = CGFloat(1.0)// + (0.8 - abs(centerX - attributes.center.x) / maxDeviation)
                 attributes.transform = CGAffineTransform(scaleX: scale, y: scale)
             }
             

@@ -63,7 +63,7 @@ class ViewController: UIViewController {
                 }
             }
         }
-        print(self.imageURLsForPresent)
+//        print(self.imageURLsForPresent)
         let imgs = imageURLsForPresent
         print(imgs)
         let url = imgs[0]
@@ -132,6 +132,7 @@ class ViewController: UIViewController {
     }
 }
 
+//MainPageViewModelDelegate
 extension ViewController: MainPageViewModelDelegate {
     func viewModel(_ viewModel: MainPageViewModel, didUpdateMainPageData data: [NewsContent]) {
         
@@ -140,7 +141,7 @@ extension ViewController: MainPageViewModelDelegate {
     
 }
 
-//Collection View数据源协议相关方法
+//CollectionView DataSource
 extension ViewController: UICollectionViewDataSource {
     //获取分区数
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -167,8 +168,8 @@ extension ViewController: UICollectionViewDataSource {
             let content = viewModel.contents[indexPath.row]
             let img = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCellID, for: indexPath) as! ImageCollectionViewCell
             let imgs = imageURLsForPresent
-            print(imgs)
-            let url = imgs[0]
+//            print(imgs)
+            let url = imgs[indexPath.row]
             URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
                 
                 if error != nil {
@@ -183,7 +184,7 @@ extension ViewController: UICollectionViewDataSource {
             }).resume()
 //            img.image.image = UIImage(data: img[0])
 //            img.backgroundColor = .gray
-            img.title.text = "PH"
+//            img.title.text = "PH"
             return img
         }
     }
@@ -191,7 +192,18 @@ extension ViewController: UICollectionViewDataSource {
 
 //Collection View样式布局协议相关方法
 extension ViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("Did select element: \(indexPath.row)")
+        
+    }
     
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        print("Highlighting at: \(indexPath.row)")
+    }
 }
 
 // Mark: - UITableViewDelegate
@@ -199,6 +211,10 @@ extension ViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, canFocusRowAt indexPath: IndexPath) -> Bool {
         return true
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("click table cell: \(indexPath.row)")
     }
 }
 
@@ -209,7 +225,20 @@ extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let contents = viewModel.contents[indexPath.row+5]
         let cell = tableView.dequeueReusableCell(withIdentifier: "NewsTableViewCell", for: indexPath) as! NewsTableViewCell
-        cell.cellImage.image = UIImage(named: "noPic")
+        let img = imageURLsForPresent
+        let url = img[indexPath.row+5]
+        URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
+            
+            if error != nil {
+                print(error!)
+                return
+            }
+            
+            DispatchQueue.main.async {
+                cell.cellImage.image = UIImage(data: data!)
+            }
+        }).resume()
+//        cell.cellImage.image = UIImage(named: "noPic")
         cell.setUI()
         cell.titleLabel.text = contents.newsTitle
         cell.typeLabel.text = contents.newsType

@@ -24,15 +24,14 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gGf-xF-L2T">
-                        <rect key="frame" x="232.5" y="148" width="35.5" height="17"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <rect key="frame" x="228" y="153.5" width="44" height="21.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
             </view>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="gGf-xF-L2T" secondAttribute="bottom" constant="85" id="C24-Zz-oLV"/>
+                <constraint firstAttribute="bottom" secondItem="gGf-xF-L2T" secondAttribute="bottom" constant="75" id="C24-Zz-oLV"/>
                 <constraint firstItem="gGf-xF-L2T" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="MwF-Ot-Br2"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
