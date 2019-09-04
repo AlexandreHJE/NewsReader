@@ -24,7 +24,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gGf-xF-L2T">
-                        <rect key="frame" x="228" y="153.5" width="44" height="21.5"/>
+                        <rect key="frame" x="100" y="153.5" width="300" height="21.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -32,7 +32,9 @@
             </view>
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="gGf-xF-L2T" secondAttribute="bottom" constant="75" id="C24-Zz-oLV"/>
+                <constraint firstAttribute="trailing" secondItem="gGf-xF-L2T" secondAttribute="trailing" constant="100" id="GXd-AQ-d7E"/>
                 <constraint firstItem="gGf-xF-L2T" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="MwF-Ot-Br2"/>
+                <constraint firstItem="gGf-xF-L2T" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="100" id="fAR-be-Rkj"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <size key="customSize" width="228" height="157"/>

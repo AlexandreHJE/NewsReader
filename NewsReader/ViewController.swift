@@ -19,6 +19,11 @@ class ViewController: UIViewController {
         return tableView
     }()
 
+    //(一定有更好的做法) 剛打開 App 等待 Api 成功回傳後初始化 tableView
+    var notInitTableViewYet = 1
+    
+    let imageCacheDirectoryPath = NSHomeDirectory() + "/Library/Caches/images/"
+    let fileManager = FileManager.default
     
     var imageURLsForPresent: [URL] = []
     
@@ -83,6 +88,7 @@ class ViewController: UIViewController {
         }).resume()
         //initGalleryView()
         initTableView()
+        notInitTableViewYet = 0
     }
     private func initCollectionView() {
         
@@ -188,7 +194,9 @@ class ViewController: UIViewController {
 //MainPageViewModelDelegate
 extension ViewController: MainPageViewModelDelegate {
     func viewModel(_ viewModel: MainPageViewModel, didUpdateMainPageData data: [NewsContent]) {
-        
+        if notInitTableViewYet > 0 {
+            clickBTN(self)
+        }
         print("data Updated")
     }
     
@@ -220,24 +228,17 @@ extension ViewController: UICollectionViewDataSource {
         }else{
             let content = viewModel.contents[indexPath.row]
             let img = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCellID, for: indexPath) as! ImageCollectionViewCell
-            let imgs = imageURLsForPresent
-//            print(imgs)
-            let url = imgs[indexPath.row]
-            URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
-                
-                if error != nil {
-                    print(error!)
-                    return
+            if let imageUrl = content.relatedPictures?.extractURLs().first {
+                let imageFileName = imageUrl.lastPathComponent
+                if fileManager.fileExists(atPath: imageCacheDirectoryPath + imageFileName) {
+                    img.image.image = UIImage(contentsOfFile: imageCacheDirectoryPath + imageFileName)
+                }else{
+                    img.image.image = UIImage(named: "noPic")
                 }
-                
-                DispatchQueue.main.async {
-                    img.image.image = UIImage(data: data!)
-                    img.title.text = content.newsTitle
-                }
-            }).resume()
-//            img.image.image = UIImage(data: img[0])
-//            img.backgroundColor = .gray
-//            img.title.text = "PH"
+            }else{
+                img.image.image = UIImage(named: "noPic")
+            }
+            img.title.text = content.newsTitle
             return img
         }
     }
@@ -296,30 +297,22 @@ extension ViewController: UITableViewDelegate {
 extension ViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let contents = viewModel.contents[indexPath.row+5]
+        let content = viewModel.contents[indexPath.row+5]
         let cell = tableView.dequeueReusableCell(withIdentifier: "NewsTableViewCell", for: indexPath) as! NewsTableViewCell
-        let img = imageURLsForPresent
-        let url = img[indexPath.row+5]
-        URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
-            
-            if error != nil {
-                print(error!)
-                return
+        
+        if let imageUrl = content.relatedPictures?.extractURLs().first {
+            let imageFileName = imageUrl.lastPathComponent
+            if fileManager.fileExists(atPath: imageCacheDirectoryPath + imageFileName) {
+                cell.cellImage.image = UIImage(contentsOfFile: imageCacheDirectoryPath + imageFileName)
+            }else{
+                cell.cellImage.image = UIImage(named: "noPic")
             }
-            
-            DispatchQueue.main.async {
-                cell.cellImage.image = UIImage(data: data!)
-            }
-        }).resume()
-//        cell.cellImage.image = UIImage(named: "noPic")
-        cell.setUI()
-        cell.titleLabel.text = contents.newsTitle
-        cell.typeLabel.text = contents.newsType
-//        cell.favoriteButton.tag = indexPath.row + 1000
-//        cell.setUI(with: station)
-//        cell.favoriteButton.setTitle("Add to favorite", for: .normal)
-//        cell.favoriteButton.setTitle("Remove from favorite", for: .selected)
-//        cell.favoriteButton.isSelected = viewModel.favoriteIDs.contains(station.sno!)
+        }else{
+            cell.cellImage.image = UIImage(named: "noPic")
+        }
+        cell.titleLabel.text = content.newsTitle
+        cell.typeLabel.text = content.newsType
+
         return cell
     }
     

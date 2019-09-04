@@ -17,7 +17,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         getData()
-        Timer.scheduledTimer(timeInterval: 10.0, target: self, selector: #selector(getData), userInfo: nil, repeats: true)
+        // File Manager
+        let fileManager = FileManager.default
+        // 建立儲存新聞圖片檔案的資料夾路徑 NSHomeDirectory + "/Library/Caches/images"
+        let imageCacheDirectory = NSHomeDirectory() + "/Library/Caches/images"
+        // !fileManager.fileExists(atPath: imageCacheDir)
+        // 表示此資料夾不存在，情況為第一次開啟App，或資料夾被刪除了。
+        if !fileManager.fileExists(atPath: imageCacheDirectory) {
+            try! fileManager.createDirectory(atPath: imageCacheDirectory, withIntermediateDirectories: false, attributes: nil)
+        }
+        //Timer.scheduledTimer(timeInterval: 10.0, target: self, selector: #selector(getData), userInfo: nil, repeats: true)
+        
         return true
     }
 

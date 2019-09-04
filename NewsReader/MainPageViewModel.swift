@@ -72,9 +72,51 @@ class MainPageViewModel {
 //                }
                 
                 self.contents = temps
+                getAndSaveImageFile(contents)
             }else{
                 print("iflet content error")
             }
         }
     }
+    
+    func getAndSaveImageFile(_ contents: [NewsContent]) {
+        print("getAndSaveImageFile")
+        let fileManager = FileManager.default
+        // 建立儲存新聞圖片檔案的資料夾路徑 NSHomeDirectory + "/Library/Caches/images"
+        let imageCacheDirectory = NSHomeDirectory() + "/Library/Caches/images"
+        let imageSaveDirectoryPath = NSHomeDirectory() + "/Library/Caches/images/"
+        // !fileManager.fileExists(atPath: imageCacheDir)
+        // 表示此資料夾不存在，情況為第一次開啟App，或資料夾被刪除了。
+        if !fileManager.fileExists(atPath: imageCacheDirectory) {
+            try! fileManager.createDirectory(atPath: imageCacheDirectory, withIntermediateDirectories: false, attributes: nil)
+        }
+        
+        let imageSession = URLSession(configuration: .default)
+        for c in contents {
+            if let img = c.relatedPictures?.extractURLs().first {
+                let fileName = img.lastPathComponent
+                let downloadTask = imageSession.dataTask(with: img) {
+                    (data, response, error) in
+                    if error != nil {
+                        print("download image session failed")
+                        return
+                    }
+                    if let loadedData = data {
+                        //如果檔案路徑(imageCacheDirectory)不存在，進行儲存
+                        if !fileManager.fileExists(atPath: imageSaveDirectoryPath + fileName) {
+                            do {
+                                try loadedData.write(to: URL(fileURLWithPath: imageSaveDirectoryPath + fileName))
+                                print("圖片儲存成功: \(imageSaveDirectoryPath)\(fileName)")
+                            }catch{
+                                print("圖片儲存失敗")
+                            }
+                        }
+                    }
+                }
+                downloadTask.resume()
+            }
+        }
+        
+    }
+    
 }
