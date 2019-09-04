@@ -32,7 +32,6 @@ class ViewController: UIViewController {
     var newsGroupFlowLayout: NewsGroupCollectionViewFlowLayout?
     let NewsGroupCellID = "NewsGroupCell"
     
-    var selectedRow = 0
     var webViewLink = ""
     
     private let viewModel = MainPageViewModel()
@@ -111,7 +110,7 @@ class ViewController: UIViewController {
         
     }
 
-    @objc func handleTap(_ sender:UITapGestureRecognizer){
+    @objc func handleTap(_ sender:UITapGestureRecognizer) {
         if sender.state == UIGestureRecognizer.State.ended{
             let tapPoint = sender.location(in: self.newsGroupCollectionView!)
             //点击的是单元格元素
@@ -164,7 +163,26 @@ class ViewController: UIViewController {
         self.tableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         self.tableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         self.tableView.sectionHeaderHeight = 250
+        
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.handleSwipe(_:)))
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.handleSwipe(_:)))
+        swipeLeft.direction = .left
+        swipeRight.direction = .right
+        self.tableView.addGestureRecognizer(swipeLeft)
+        self.tableView.addGestureRecognizer(swipeRight)
     }
+    
+    @objc func handleSwipe(_ recognizer: UISwipeGestureRecognizer) {
+//        let centerPoint = tableView.center
+        if recognizer.direction == .left {
+            print("swipe Left")
+        }else if recognizer.direction == .right {
+            print("swipe Right")
+        }else{
+            print("swipe ?? side")
+        }
+    }
+    
 }
 
 //MainPageViewModelDelegate
@@ -261,7 +279,6 @@ extension ViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("click table cell: \(indexPath.row)")
-        selectedRow = indexPath.row
         webViewLink = viewModel.contents[indexPath.row+5].source!
 //        print(webViewLink)
         let webView = storyboard?.instantiateViewController(withIdentifier: "WebVC") as! WebViewController

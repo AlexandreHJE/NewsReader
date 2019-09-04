@@ -27,7 +27,7 @@
                                 </textAttributes>
                                 <items>
                                     <navigationItem title="GOV News" id="Ujl-Jd-i8g">
-                                        <barButtonItem key="rightBarButtonItem" style="plain" id="bGa-uj-f0r">
+                                        <barButtonItem key="rightBarButtonItem" id="bGa-uj-f0r">
                                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="IR2-jN-Kq1">
                                                 <rect key="frame" x="348" y="7" width="46" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
