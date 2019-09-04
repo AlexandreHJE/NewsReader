@@ -116,7 +116,14 @@ class MainPageViewModel {
                 downloadTask.resume()
             }
         }
-        
     }
     
+    func getData() {
+        DataManager.shared.getNewsData { (contents) in
+            //save local
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "GetData"), object: self, userInfo: ["contents": contents])
+        }
+        print("gd")
+        
+    }
 }

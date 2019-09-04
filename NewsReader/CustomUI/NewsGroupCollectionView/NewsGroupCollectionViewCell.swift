@@ -14,7 +14,7 @@ class NewsGroupCollectionViewCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        self.titleLabel.text = "label1"
+//        self.titleLabel.text = "label1"
     }
 
 }

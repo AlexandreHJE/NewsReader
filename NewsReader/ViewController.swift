@@ -19,6 +19,11 @@ class ViewController: UIViewController {
         return tableView
     }()
 
+    lazy var loadingScreen: LoadingScreenView = {
+        let view = LoadingScreenView(frame: .zero)
+        return view
+    }()
+    
     //(一定有更好的做法) 剛打開 App 等待 Api 成功回傳後初始化 tableView
     var notInitTableViewYet = 1
     
@@ -39,6 +44,8 @@ class ViewController: UIViewController {
     
     var webViewLink = ""
     
+    
+    
     private let viewModel = MainPageViewModel()
     
     override func viewDidLoad() {
@@ -46,56 +53,58 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view.
 //        DataManager.shared.getNewsData()
         
+        
         self.viewModel.delegate = self
+        initCollectionView()
+        showLoadingScreen()
         //API回應時間比較慢 一開始內容為空陣列
 //        print(self.viewModel.contents)
-        initCollectionView()
-        
-
+    
     }
     
-    @IBAction func clickBTN(_ sender: Any) {
-//        print(self.viewModel.contents)
-//        print("ImageLink")
-//        print(self.viewModel.imageLinks)
-        for c in self.viewModel.contents {
-            //imgs成功取值
-            if let imgs = c.relatedPictures?.extractURLs() {
-                //陣列內容數不為零
-                if imgs.count != 0 {
-                    //取回傳圖片位址陣列的第一個當作要用的
-                    imageURLsForPresent.append(imgs[0])
-                }else{
-                    //若無則用預設圖片(之後應該要修改 改用本地端圖片省流量)
-                    imageURLsForPresent.append(URL(string: "https://i.imgur.com/RHV00nR.jpg")!)
-                }
-            }
+    func showLoadingScreen() {
+//        loadingScreen.isHidden = false
+        loadingScreen = LoadingScreenView()
+        self.view.addSubview(loadingScreen)
+        self.loadingScreen.translatesAutoresizingMaskIntoConstraints = false
+        self.loadingScreen.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        self.loadingScreen.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        self.loadingScreen.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        self.loadingScreen.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        self.loadingScreen.backgroundColor = .black
+        self.loadingScreen.alpha = 0.95
+        self.loadingScreen.tag = 300
+        
+        let activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
+        self.loadingScreen.addSubview(activityIndicator)
+        activityIndicator.frame = self.view.bounds
+        activityIndicator.color = .orange
+        activityIndicator.startAnimating()
+        
+        print("show loading")
+    }
+    
+    func removeLoadingScreen() {
+        if let viewWithTag = self.view.viewWithTag(300) {
+            viewWithTag.removeFromSuperview()
+            print("Removed load screen")
+        }else{
+            print("Didn't find loading screen")
         }
-//        print(self.imageURLsForPresent)
-        let imgs = imageURLsForPresent
-//        print(imgs)
-        let url = imgs[0]
-        URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
-
-            if error != nil {
-                print(error!)
-                return
-            }
-
-            DispatchQueue.main.async {
-//                self.image.image = UIImage(data: data!)
-            }
-        }).resume()
-        //initGalleryView()
+    }
+    
+    
+    func initTableViewAndHeader() {
         initTableView()
         notInitTableViewYet = 0
     }
+    
     private func initCollectionView() {
         
         newsFlowLayout = UICollectionViewFlowLayout()
         newsFlowLayout!.itemSize = CGSize(width: 20, height: 30)
         newsFlowLayout!.sectionInset = UIEdgeInsets(top: 74, left: 0, bottom: 0, right: 0)
-
+        
         newsGroupFlowLayout = NewsGroupCollectionViewFlowLayout()
         newsGroupCollectionView = UICollectionView(frame: CGRect(x: 0, y: 80, width: view.frame.width, height: 40), collectionViewLayout: newsGroupFlowLayout!)
         
@@ -115,7 +124,7 @@ class ViewController: UIViewController {
         newsGroupCollectionView!.addGestureRecognizer(tapRecognizer)
         
     }
-
+    
     @objc func handleTap(_ sender:UITapGestureRecognizer) {
         if sender.state == UIGestureRecognizer.State.ended{
             let tapPoint = sender.location(in: self.newsGroupCollectionView!)
@@ -125,8 +134,8 @@ class ViewController: UIViewController {
                 //同时该方法触发collectionView所对应的layout的对应的动画。
                 self.newsGroupCollectionView!.performBatchUpdates({ () -> Void in
                     print("tap \(indexPath.row) cell")
-//                    self.collectionView.deleteItems(at: [indexPath])
-//                    self.images.remove(at: indexPath.row)
+                    //                    self.collectionView.deleteItems(at: [indexPath])
+                    //                    self.images.remove(at: indexPath.row)
                 }, completion: nil)
                 
             }
@@ -134,11 +143,19 @@ class ViewController: UIViewController {
             else{
                 print("tap empty place.")
                 //新元素插入的位置（开头）
-//                let index = 0
-//                images.insert("xcode.png", at: index)
-//                self.collectionView.insertItems(at: [IndexPath(item: index, section: 0)])
+                //                let index = 0
+                //                images.insert("xcode.png", at: index)
+                //                self.collectionView.insertItems(at: [IndexPath(item: index, section: 0)])
             }
         }
+    }
+    
+    @IBAction func clickRefreshBTN(_ sender: Any) {
+//        print(self.viewModel.contents)
+//        print("ImageLink")
+//        print(self.viewModel.imageLinks)
+        self.viewModel.getData()
+        showLoadingScreen()
     }
     
     private func initGalleryView() {
@@ -195,8 +212,14 @@ class ViewController: UIViewController {
 extension ViewController: MainPageViewModelDelegate {
     func viewModel(_ viewModel: MainPageViewModel, didUpdateMainPageData data: [NewsContent]) {
         if notInitTableViewYet > 0 {
-            clickBTN(self)
+            initTableViewAndHeader()
+            print("init Table View Header")
+        }else{
+            tableView.reloadData()
+            imageGalleryCollectionView?.reloadData()
+            print("reload Table View Header")
         }
+        removeLoadingScreen()
         print("data Updated")
     }
     
