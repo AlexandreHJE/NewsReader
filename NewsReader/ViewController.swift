@@ -229,9 +229,13 @@ extension ViewController: UICollectionViewDataSource {
 extension ViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("Did select element: \(indexPath.row)")
-        let cell = collectionView.cellForItem(at: indexPath)
-        
-        cell?.backgroundColor = .yellow
+        if collectionView == self.imageGalleryCollectionView {
+            webViewLink = viewModel.contents[indexPath.row].source!
+            let webView = storyboard?.instantiateViewController(withIdentifier: "WebVC") as! WebViewController
+            webView.mainViewController = self
+            show(webView, sender: self)
+        }
+//        cell?.backgroundColor = .yellow
 //        cell?.backgroundView?.backgroundColor = .yellow
 //        cell?.contentView.layer.borderWidth = 2.0
 //        cell?.contentView.layer.borderColor = UIColor.yellow.cgColor
@@ -245,7 +249,6 @@ extension ViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
         print("Highlighting at: \(indexPath.row)")
-        selectedRow = indexPath.row
     }
 }
 
