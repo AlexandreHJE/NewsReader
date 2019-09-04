@@ -68,7 +68,7 @@ class ViewController: UIViewController {
         }
 //        print(self.imageURLsForPresent)
         let imgs = imageURLsForPresent
-        print(imgs)
+//        print(imgs)
         let url = imgs[0]
         URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
 
@@ -261,17 +261,21 @@ extension ViewController: UICollectionViewDelegate {
 //        cell?.layer.borderColor = UIColor.yellow.cgColor
     }
     
-    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    
     func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
         print("Highlighting at: \(indexPath.row)")
+        //如何透過滑動collectionView來連動pageController的顯示？
+        if collectionView == self.imageGalleryCollectionView {
+            
+        }
     }
 }
 
 // Mark: - UITableViewDelegate
 extension ViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
     
     func tableView(_ tableView: UITableView, canFocusRowAt indexPath: IndexPath) -> Bool {
         return true
@@ -323,6 +327,10 @@ extension ViewController: UITableViewDataSource {
         let returnUIView = UIView()
         initGalleryView()
         returnUIView.addSubview(imageGalleryCollectionView!)
+        let pagerView = UIPageControl(frame: CGRect(x: 0, y: imageGalleryCollectionView!.frame.height-50, width: 0, height: 20))
+        pagerView.numberOfPages = 5
+        pagerView.currentPage = 0
+        returnUIView.addSubview(pagerView)
 //        returnUIView.backgroundColor = .yellow
         return returnUIView
 //        return imageGalleryCollectionView
@@ -336,7 +344,7 @@ extension ViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-//        return 10
+        //減五的原因是前面五則新聞方放在header裡面的CollectionView
         return viewModel.contents.count - 5
     }
 }
