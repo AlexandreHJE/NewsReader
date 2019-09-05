@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 enum NewsType: String {
     case travelTour = "觀光旅遊;"
     case enviromentSafety = "環保工安;"

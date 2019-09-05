@@ -13,27 +13,26 @@ protocol MainPageViewModelDelegate {
 }
 
 class MainPageViewModel {
+    
+    //姑且一試
+    //綜合新聞: 全部內容
+    //社會公益: 社會公益/ 社會福利
+    //環保公告: 環保工安/ 災害應變中心公告
+    //其他分類: 剩餘的內容
+    let newsGroups = ["綜合新聞", "社會公益", "行政業務", "環保公告", "其他分類"]
+    
     private(set) var contents = [NewsContent]() {
         didSet {
+            print("did set contents in vm")
             delegate?.viewModel(self, didUpdateMainPageData: contents)
+            print("finished did set contents in vm")
         }
     }
     
     //缺若點選更新時，此資料陣列應該要跟著刷新
-    private(set) var imageLinks = [URL]() {
+    private(set) var newsByGroup = [[NewsContent]]() {
         didSet {
-            for c in contents {
-                if let imgs = c.relatedPictures?.extractURLs() {
-                    //陣列內容數不為零
-                    if imgs.count != 0 {
-                        //取回傳圖片位址陣列的第一個當作要用的
-                        imageLinks.append(imgs[0])
-                    }else{
-                        //若無則用預設圖片(之後應該要修改 改用本地端圖片省流量)
-                        imageLinks.append(URL(string: "https://i.imgur.com/RHV00nR.jpg")!)
-                    }
-                }
-            }
+            delegate?.viewModel(self, didUpdateMainPageData: contents)
         }
     }
     
@@ -73,6 +72,48 @@ class MainPageViewModel {
                 
                 self.contents = temps
                 getAndSaveImageFile(contents)
+                
+                for i in 0..<newsGroups.count {
+                    switch i {
+                    case 0:
+                        newsByGroup.append(contents)
+                    case 1:
+                        var temp = [NewsContent]()
+                        for c in contents {
+                            if c.newsType! == NewsType.socialGoodness.rawValue || c.newsType! == NewsType.socialWellness.rawValue {
+                                temp.append(c)
+                            }
+                        }
+                        newsByGroup.append(temp)
+                    case 2:
+                        var temp = [NewsContent]()
+                        for c in contents {
+                            if c.newsType! == NewsType.education.rawValue || c.newsType! == NewsType.miscellaneous.rawValue || c.newsType! == NewsType.finacial.rawValue {
+                                temp.append(c)
+                            }
+                        }
+                        newsByGroup.append(temp)
+                    case 3:
+                        var temp = [NewsContent]()
+                        for c in contents {
+                            if c.newsType! == NewsType.enviromentSafety.rawValue || c.newsType! == NewsType.disasterCenter.rawValue {
+                                temp.append(c)
+                            }
+                        }
+                        newsByGroup.append(temp)
+                    case 4:
+                        var temp = [NewsContent]()
+                        for c in contents {
+                            if c.newsType! == NewsType.other.rawValue {
+                                temp.append(c)
+                            }
+                        }
+                        newsByGroup.append(temp)
+                    default:
+                        newsByGroup.append(contents)
+                    }
+                    print("finished newsgroup")
+                }
             }else{
                 print("iflet content error")
             }

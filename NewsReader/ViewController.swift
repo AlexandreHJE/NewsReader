@@ -24,6 +24,13 @@ class ViewController: UIViewController {
         return view
     }()
     
+    //綜合新聞: 全部內容
+    //社會公益: 社會公益/ 社會福利
+    //環保公告: 環保工安/ 災害應變中心公告
+    //其他分類: 剩餘的內容
+    let newsGroups = ["綜合新聞", "社會公益", "行政業務", "環保公告", "其他分類"]
+    var newsGroupPointer = 0
+    
     //(一定有更好的做法) 剛打開 App 等待 Api 成功回傳後初始化 tableView
     var notInitTableViewYet = 1
     
@@ -102,7 +109,7 @@ class ViewController: UIViewController {
     private func initCollectionView() {
         
         newsFlowLayout = UICollectionViewFlowLayout()
-        newsFlowLayout!.itemSize = CGSize(width: 20, height: 30)
+        newsFlowLayout!.itemSize = CGSize(width: 60, height: 30)
         newsFlowLayout!.sectionInset = UIEdgeInsets(top: 74, left: 0, bottom: 0, right: 0)
         
         newsGroupFlowLayout = NewsGroupCollectionViewFlowLayout()
@@ -129,23 +136,18 @@ class ViewController: UIViewController {
         if sender.state == UIGestureRecognizer.State.ended{
             let tapPoint = sender.location(in: self.newsGroupCollectionView!)
             //点击的是单元格元素
-            if let  indexPath = self.newsGroupCollectionView!.indexPathForItem(at: tapPoint) {
-                //通过performBatchUpdates对collectionView中的元素进行批量的插入，删除，移动等操作
-                //同时该方法触发collectionView所对应的layout的对应的动画。
-                self.newsGroupCollectionView!.performBatchUpdates({ () -> Void in
-                    print("tap \(indexPath.row) cell")
-                    //                    self.collectionView.deleteItems(at: [indexPath])
-                    //                    self.images.remove(at: indexPath.row)
-                }, completion: nil)
-                
+            if let indexPath = self.newsGroupCollectionView!.indexPathForItem(at: tapPoint) {
+                newsGroupPointer = indexPath.row
+                newsGroupCollectionView?.reloadData()
+                tableView.reloadData()
+//                self.newsGroupCollectionView!.performBatchUpdates({ () -> Void in
+//                    print("tap \(indexPath.row) cell")
+//                    newsGroupPointer = indexPath.row
+//                    tableView.reloadData()
+//                }, completion: nil)
             }
-                //点击的是空白位置
             else{
                 print("tap empty place.")
-                //新元素插入的位置（开头）
-                //                let index = 0
-                //                images.insert("xcode.png", at: index)
-                //                self.collectionView.insertItems(at: [IndexPath(item: index, section: 0)])
             }
         }
     }
@@ -168,7 +170,7 @@ class ViewController: UIViewController {
         
         imageGalleryCollectionView!.delegate = self
         imageGalleryCollectionView!.dataSource = self
-        imageGalleryCollectionView!.backgroundColor = .green
+        imageGalleryCollectionView!.backgroundColor = .white
         
         let cellXIB = UINib.init(nibName: "ImageCollectionViewCell", bundle: Bundle.main)
         imageGalleryCollectionView!.register(cellXIB, forCellWithReuseIdentifier: ImageCellID)
@@ -199,7 +201,17 @@ class ViewController: UIViewController {
 //        let centerPoint = tableView.center
         if recognizer.direction == .left {
             print("swipe Left")
+            if newsGroupPointer < newsGroups.count - 1 {
+                newsGroupPointer += 1
+                newsGroupCollectionView?.reloadData()
+                tableView.reloadData()
+            }
         }else if recognizer.direction == .right {
+            if newsGroupPointer > 0 {
+                newsGroupPointer -= 1
+                newsGroupCollectionView?.reloadData()
+                tableView.reloadData()
+            }
             print("swipe Right")
         }else{
             print("swipe ?? side")
@@ -235,6 +247,14 @@ extension ViewController: UICollectionViewDataSource {
     //获取每个分区里单元格数量
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
+        if collectionView == self.imageGalleryCollectionView {
+            let content = viewModel.newsByGroup[newsGroupPointer]
+            if content.count >= 5 {
+                return 5
+            }else{
+                return content.count
+            }
+        }
         return 5
     }
     
@@ -245,11 +265,17 @@ extension ViewController: UICollectionViewDataSource {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier:
                 NewsGroupCellID, for: indexPath) as! NewsGroupCollectionViewCell
             //设置内部显示的图片
-            cell.titleLabel.text = "Label"
+            cell.titleLabel.text = newsGroups[indexPath.row]
+            cell.titleLabel.textColor = .gray
+            if indexPath.row == newsGroupPointer {
+                cell.titleLabel.textColor = .black
+            }else{
+                cell.titleLabel.textColor = .gray
+            }
             //获取重用的单元格
             return cell
         }else{
-            let content = viewModel.contents[indexPath.row]
+            let content = (viewModel.newsByGroup[newsGroupPointer])[indexPath.row]
             let img = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCellID, for: indexPath) as! ImageCollectionViewCell
             if let imageUrl = content.relatedPictures?.extractURLs().first {
                 let imageFileName = imageUrl.lastPathComponent
@@ -271,8 +297,11 @@ extension ViewController: UICollectionViewDataSource {
 extension ViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("Did select element: \(indexPath.row)")
-        if collectionView == self.imageGalleryCollectionView {
-            webViewLink = viewModel.contents[indexPath.row].source!
+        if collectionView == self.newsGroupCollectionView {
+            tableView.reloadData()
+        }else if collectionView == self.imageGalleryCollectionView {
+            let content = (viewModel.newsByGroup[newsGroupPointer])[indexPath.row]
+            webViewLink = content.source!
             let webView = storyboard?.instantiateViewController(withIdentifier: "WebVC") as! WebViewController
             webView.mainViewController = self
             show(webView, sender: self)
@@ -288,8 +317,9 @@ extension ViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
         print("Highlighting at: \(indexPath.row)")
         //如何透過滑動collectionView來連動pageController的顯示？
-        if collectionView == self.imageGalleryCollectionView {
-            
+        if collectionView == self.newsGroupCollectionView {
+//            newsGroupPointer = indexPath.row
+//            tableView.reloadData()
         }
     }
 }
@@ -307,7 +337,8 @@ extension ViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("click table cell: \(indexPath.row)")
-        webViewLink = viewModel.contents[indexPath.row+5].source!
+        let content = (viewModel.newsByGroup[newsGroupPointer])[indexPath.row+5]
+        webViewLink = content.source!
 //        print(webViewLink)
         let webView = storyboard?.instantiateViewController(withIdentifier: "WebVC") as! WebViewController
         webView.mainViewController = self
@@ -320,7 +351,7 @@ extension ViewController: UITableViewDelegate {
 extension ViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let content = viewModel.contents[indexPath.row+5]
+        let content = (viewModel.newsByGroup[newsGroupPointer])[indexPath.row+5]
         let cell = tableView.dequeueReusableCell(withIdentifier: "NewsTableViewCell", for: indexPath) as! NewsTableViewCell
         
         if let imageUrl = content.relatedPictures?.extractURLs().first {
@@ -359,7 +390,14 @@ extension ViewController: UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
+        if newsGroupPointer != 0 {
+            let content = viewModel.newsByGroup[newsGroupPointer]
+            if content.count > 5 {
+                return content.count - 5
+            }else{
+                return 0
+            }
+        }
         //減五的原因是前面五則新聞方放在header裡面的CollectionView
         return viewModel.contents.count - 5
     }

@@ -109,6 +109,7 @@
 		A28124FC23178EFC0096CA56 /* NewsReader */ = {
 			isa = PBXGroup;
 			children = (
+				A2F4A9DC2320A43400EA36E9 /* Models */,
 				A2F4A9B723181EE100EA36E9 /* CustomUI */,
 				A28124FD23178EFC0096CA56 /* AppDelegate.swift */,
 				A28124FF23178EFC0096CA56 /* ViewController.swift */,
@@ -117,7 +118,6 @@
 				A281251D23178F680096CA56 /* DataManager.swift */,
 				A2F4A9B52318067700EA36E9 /* ImageURLMatcher.swift */,
 				A28125212317FF800096CA56 /* MainPageViewModel.swift */,
-				A281251F23178F9C0096CA56 /* ApiModel.swift */,
 				A2F4A9BC2318D98900EA36E9 /* NewsTypes.swift */,
 				A281250423178EFF0096CA56 /* Assets.xcassets */,
 				A281250623178EFF0096CA56 /* LaunchScreen.storyboard */,
@@ -182,6 +182,14 @@
 				A2F4A9DA232005A600EA36E9 /* LoadingScreenView.xib */,
 			);
 			path = LoadingScreenView;
+			sourceTree = "<group>";
+		};
+		A2F4A9DC2320A43400EA36E9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A281251F23178F9C0096CA56 /* ApiModel.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
