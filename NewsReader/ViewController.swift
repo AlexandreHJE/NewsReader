@@ -57,16 +57,10 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-//        DataManager.shared.getNewsData()
-        
         
         self.viewModel.delegate = self
         initCollectionView()
         showLoadingScreen()
-        //API回應時間比較慢 一開始內容為空陣列
-//        print(self.viewModel.contents)
-    
     }
     
     func showLoadingScreen() {
