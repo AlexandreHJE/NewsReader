@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 class ViewController: UIViewController {
     
     lazy var tableView: UITableView = {
@@ -18,7 +17,7 @@ class ViewController: UIViewController {
         tableView.register(UINib(nibName: "NewsTableViewCell", bundle: nil), forCellReuseIdentifier: "NewsTableViewCell")
         return tableView
     }()
-
+    
     lazy var loadingScreen: LoadingScreenView = {
         let view = LoadingScreenView(frame: .zero)
         return view
@@ -64,7 +63,7 @@ class ViewController: UIViewController {
     }
     
     func showLoadingScreen() {
-//        loadingScreen.isHidden = false
+        //        loadingScreen.isHidden = false
         loadingScreen = LoadingScreenView()
         self.view.addSubview(loadingScreen)
         self.loadingScreen.translatesAutoresizingMaskIntoConstraints = false
@@ -162,9 +161,8 @@ class ViewController: UIViewController {
         imageGalleryCollectionView!.register(cellXIB, forCellWithReuseIdentifier: ImageCellID)
         imageGalleryCollectionView!.showsHorizontalScrollIndicator = false
     }
-
+    
     private func initTableView() {
-        print("init TableView")
         self.view.addSubview(self.tableView)
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
         self.tableView.topAnchor.constraint(equalTo: self.newsGroupCollectionView!.bottomAnchor).isActive = true
@@ -183,7 +181,6 @@ class ViewController: UIViewController {
     
     @objc func handleSwipe(_ recognizer: UISwipeGestureRecognizer) {
         if recognizer.direction == .left {
-            print("swipe Left")
             if newsGroupPointer < newsGroups.count - 1 {
                 newsGroupPointer += 1
                 newsGroupCollectionView?.reloadData()
@@ -195,7 +192,6 @@ class ViewController: UIViewController {
                 newsGroupCollectionView?.reloadData()
                 tableView.reloadData()
             }
-            print("swipe Right")
         }else{
             print("swipe ?? side")
         }
@@ -208,20 +204,16 @@ extension ViewController: MainPageViewModelDelegate {
     func viewModel(_ viewModel: MainPageViewModel, didUpdateMainPageData data: [NewsContent]) {
         if notInitTableViewYet > 0 {
             initTableViewAndHeader()
-            print("init Table View Header")
         }else{
             tableView.reloadData()
             imageGalleryCollectionView?.reloadData()
-            print("reload Table View Header")
         }
         removeLoadingScreen()
-        print("data Updated")
     }
     
     func viewModel(_ viewModel: MainPageViewModel, didUpdateImageFileNames names: [String]) {
         tableView.reloadData()
         imageGalleryCollectionView?.reloadData()
-        print("image files updated")
     }
     
 }
@@ -311,7 +303,6 @@ extension ViewController: UITableViewDelegate {
         print("click table cell: \(indexPath.row)")
         let content = (viewModel.newsByGroup[newsGroupPointer])[indexPath.row+5]
         webViewLink = content.source!
-//        print(webViewLink)
         let webView = storyboard?.instantiateViewController(withIdentifier: "WebVC") as! WebViewController
         webView.mainViewController = self
         show(webView, sender: self)
@@ -338,7 +329,7 @@ extension ViewController: UITableViewDataSource {
         }
         cell.titleLabel.text = content.newsTitle
         cell.typeLabel.text = content.newsType
-
+        
         return cell
     }
     
