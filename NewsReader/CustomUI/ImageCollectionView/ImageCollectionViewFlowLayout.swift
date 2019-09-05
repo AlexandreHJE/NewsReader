@@ -95,6 +95,7 @@ class ImageCollectionViewFlowLayout: UICollectionViewFlowLayout {
                 adjustOffsetX = deviation
             }
         }
+        print("stop \(CGPoint(x: proposedContentOffset.x + adjustOffsetX, y: proposedContentOffset.y))")
         //通过偏移量返回最终停留的位置
         return CGPoint(x: proposedContentOffset.x + adjustOffsetX, y: proposedContentOffset.y)
     }

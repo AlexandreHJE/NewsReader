@@ -308,14 +308,20 @@ extension ViewController: UICollectionViewDelegate {
 //        cell?.layer.borderColor = UIColor.yellow.cgColor
     }
     
+    
+    
     func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
         print("Highlighting at: \(indexPath.row)")
         //如何透過滑動collectionView來連動pageController的顯示？
+        
         if collectionView == self.newsGroupCollectionView {
 //            newsGroupPointer = indexPath.row
 //            tableView.reloadData()
+        }else if collectionView == self.imageGalleryCollectionView {
+        
         }
     }
+    
 }
 
 // Mark: - UITableViewDelegate
@@ -369,12 +375,32 @@ extension ViewController: UITableViewDataSource {
         initGalleryView()
         returnUIView.addSubview(imageGalleryCollectionView!)
         let pagerView = UIPageControl(frame: CGRect(x: 0, y: imageGalleryCollectionView!.frame.height-50, width: 0, height: 20))
-        pagerView.numberOfPages = 5
+        let content = viewModel.newsByGroup[newsGroupPointer]
+        if content.count > 5 {
+            pagerView.numberOfPages = 5
+        }else{
+            pagerView.numberOfPages = content.count
+        }
         pagerView.currentPage = 0
+        pagerView.tag = 400
         returnUIView.addSubview(pagerView)
 //        returnUIView.backgroundColor = .yellow
         return returnUIView
 //        return imageGalleryCollectionView
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offSet = scrollView.contentOffset.x
+        let width = scrollView.frame.width
+//        let horizontalCenter = width / 2
+        
+        if let pageControlViewWithTag = self.tableView.viewWithTag(400) as? UIPageControl {
+            pageControlViewWithTag.currentPage = Int(offSet) / Int(width)
+            print(pageControlViewWithTag.currentPage)
+        }else{
+            //在一開始畫面初始化的時候會綁定不到，進入這行
+            print("Can't bind pager")
+        }
     }
     
 //    private func tableView(tableView: UITableView,
