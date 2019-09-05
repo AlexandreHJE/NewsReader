@@ -17,8 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         getData()
-//        getImageFileInfo()
-        Timer.scheduledTimer(timeInterval: 10.0, target: self, selector: #selector(getImageFileInfo), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 15.0, target: self, selector: #selector(getImageFileInfo), userInfo: nil, repeats: true)
         return true
     }
 
@@ -51,7 +50,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             //save local
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "GetData"), object: self, userInfo: ["contents": contents])
         }
-        print("gd")
     }
     
     @objc
