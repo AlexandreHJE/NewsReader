@@ -218,6 +218,12 @@ extension ViewController: MainPageViewModelDelegate {
         print("data Updated")
     }
     
+    func viewModel(_ viewModel: MainPageViewModel, didUpdateImageFileNames names: [String]) {
+        tableView.reloadData()
+        imageGalleryCollectionView?.reloadData()
+        print("image files updated")
+    }
+    
 }
 
 // Mark: - UICollectionViewDataSource

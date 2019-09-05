@@ -25,7 +25,6 @@ extension DataManager {
                 print("JSON parse success!")
                 DispatchQueue.main.sync {
                     completion(apiResponse)
-                    print("DQ")
                 }
                 
             }else{
@@ -33,5 +32,22 @@ extension DataManager {
             }
         }
         task.resume()
+    }
+}
+
+extension DataManager {
+    
+    func getImageFileList(_ completion: @escaping ([String]) -> Void) {
+        let fileManager = FileManager.default
+        let imageCacheDirectory = NSHomeDirectory() + "/Library/Caches/images"
+        if !fileManager.fileExists(atPath: imageCacheDirectory) {
+            try! fileManager.createDirectory(atPath: imageCacheDirectory, withIntermediateDirectories: false, attributes: nil)
+        }
+        do {
+            let imageFileNames = try fileManager.contentsOfDirectory(atPath: imageCacheDirectory)
+            completion(imageFileNames)
+        }catch{
+            print("阿怎麼沒有東西")
+        }
     }
 }

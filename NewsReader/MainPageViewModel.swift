@@ -10,6 +10,8 @@ import Foundation
 
 protocol MainPageViewModelDelegate {
     func viewModel(_ viewModel: MainPageViewModel, didUpdateMainPageData data: [NewsContent])
+    
+    func viewModel(_ viewModel: MainPageViewModel, didUpdateImageFileNames names: [String])
 }
 
 class MainPageViewModel {
@@ -29,46 +31,39 @@ class MainPageViewModel {
         }
     }
     
-    //缺若點選更新時，此資料陣列應該要跟著刷新
     private(set) var newsByGroup = [[NewsContent]]() {
         didSet {
             delegate?.viewModel(self, didUpdateMainPageData: contents)
         }
     }
     
-//    private(set) var contentTable = [String: NewsContent]() {
-//        didSet {
-//            contents = contentTable
-//                .map({ (dictionary) -> NewsContent in
-//                    return dictionary.value
-//                })
-//        }
-//    }
+    
+    private(set) var imageFileNameList = [String]() {
+        didSet {
+            delegate?.viewModel(self, didUpdateImageFileNames: imageFileNameList)
+        }
+    }
+    
     
     var delegate: MainPageViewModelDelegate?
     
     init() {
         print("init")
         NotificationCenter.default.addObserver(self, selector: #selector(processingDataToArray(_:)), name: NSNotification.Name(rawValue: "GetData"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(imageFileNamesUpdate(_:)), name: Notification.Name(rawValue: "GetNames"), object: nil)
     }
     
     @objc
     func processingDataToArray(_ notification: Notification) {
         print("pdta")
         if let userInfo = notification.userInfo {
-            print("userInfo")
-//            if let contentTable = userInfo["contents"] as? [String: NewsContent] {
             if let contents = userInfo["contents"] as? [NewsContent] {
-//                self.contentTable = contentTable
+
                 self.contents = contents
-                print("aa")
                 var temps = [NewsContent]()
                 for v in contents {
                     temps.append(v)
                 }
-//                for k in contentTable.keys {
-//                    temps.append(contentTable[k]!)
-//                }
                 
                 self.contents = temps
                 getAndSaveImageFile(contents)
@@ -121,7 +116,7 @@ class MainPageViewModel {
     }
     
     func getAndSaveImageFile(_ contents: [NewsContent]) {
-        print("getAndSaveImageFile")
+        
         let fileManager = FileManager.default
         // 建立儲存新聞圖片檔案的資料夾路徑 NSHomeDirectory + "/Library/Caches/images"
         let imageCacheDirectory = NSHomeDirectory() + "/Library/Caches/images"
@@ -147,7 +142,6 @@ class MainPageViewModel {
                         if !fileManager.fileExists(atPath: imageSaveDirectoryPath + fileName) {
                             do {
                                 try loadedData.write(to: URL(fileURLWithPath: imageSaveDirectoryPath + fileName))
-                                print("圖片儲存成功: \(imageSaveDirectoryPath)\(fileName)")
                             }catch{
                                 print("圖片儲存失敗")
                             }
@@ -159,12 +153,26 @@ class MainPageViewModel {
         }
     }
     
+    @objc
+    func imageFileNamesUpdate(_ notification: Notification) {
+        if let userInfo = notification.userInfo {
+            if let imageFileNameList = userInfo["imageNames"] as? [String] {
+                
+                self.imageFileNameList = imageFileNameList
+                var temps = [String]()
+                for name in imageFileNameList {
+                    temps.append(name)
+                }
+                self.imageFileNameList = temps
+            }
+        }
+    }
+    
     func getData() {
         DataManager.shared.getNewsData { (contents) in
-            //save local
+            
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "GetData"), object: self, userInfo: ["contents": contents])
         }
-        print("gd")
-        
     }
+    
 }
