@@ -25,12 +25,4 @@ class NewsTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-    
-    func setUI() {
-        cellImage.image = UIImage(named: "noPic")
-        titleLabel.text = "新北加一分 五五六六得第一 "
-        typeLabel.text = "Not a Type"
-    }
-    
-//    func setUI(with content: NewsContent) {}
 }

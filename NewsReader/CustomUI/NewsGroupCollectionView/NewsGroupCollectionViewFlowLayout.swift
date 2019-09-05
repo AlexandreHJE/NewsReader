@@ -42,10 +42,6 @@ class NewsGroupCollectionViewFlowLayout: UICollectionViewFlowLayout {
                                       width: self.collectionView!.frame.width,
                                       height: self.collectionView!.frame.height)
             
-            let centerX = self.collectionView!.contentOffset.x + self.collectionView!.bounds.width / 2
-            
-            let maxDeviation = self.collectionView!.bounds.width / 2 + itemWidth / 2
-            
             for attributes in array! {
                 
                 if !visiableRect.intersects(attributes.frame) {continue}
@@ -57,12 +53,7 @@ class NewsGroupCollectionViewFlowLayout: UICollectionViewFlowLayout {
             return array
     }
     
-    /*
-    用来设置collectionView停止滚动那一刻的位置(实现目的是当停止滑动，时刻有一张图片是位于屏幕最中央的)
-    proposedContentOffset: 原本collectionView停止滚动那一刻的位置
-    velocity:滚动速度
-    返回：最终停留的位置
-    */
+
     override func targetContentOffset(forProposedContentOffset
         proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
         

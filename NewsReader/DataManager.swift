@@ -27,8 +27,7 @@ extension DataManager {
                     completion(apiResponse)
                     print("DQ")
                 }
-//                print(apiResponse[0].relatedPictures)
-//                print(apiResponse[0].relatedPictures?.extractURLs() ?? "EMPTY")
+                
             }else{
                 print("JSON parse failed...")
             }

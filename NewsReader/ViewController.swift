@@ -134,11 +134,6 @@ class ViewController: UIViewController {
                 newsGroupPointer = indexPath.row
                 newsGroupCollectionView?.reloadData()
                 tableView.reloadData()
-//                self.newsGroupCollectionView!.performBatchUpdates({ () -> Void in
-//                    print("tap \(indexPath.row) cell")
-//                    newsGroupPointer = indexPath.row
-//                    tableView.reloadData()
-//                }, completion: nil)
             }
             else{
                 print("tap empty place.")
@@ -147,9 +142,6 @@ class ViewController: UIViewController {
     }
     
     @IBAction func clickRefreshBTN(_ sender: Any) {
-//        print(self.viewModel.contents)
-//        print("ImageLink")
-//        print(self.viewModel.imageLinks)
         self.viewModel.getData()
         showLoadingScreen()
     }
@@ -169,8 +161,6 @@ class ViewController: UIViewController {
         let cellXIB = UINib.init(nibName: "ImageCollectionViewCell", bundle: Bundle.main)
         imageGalleryCollectionView!.register(cellXIB, forCellWithReuseIdentifier: ImageCellID)
         imageGalleryCollectionView!.showsHorizontalScrollIndicator = false
-        //将Collection View添加到主视图中
-//        view.addSubview(imageGalleryCollectionView!)
     }
 
     private func initTableView() {
@@ -192,7 +182,6 @@ class ViewController: UIViewController {
     }
     
     @objc func handleSwipe(_ recognizer: UISwipeGestureRecognizer) {
-//        let centerPoint = tableView.center
         if recognizer.direction == .left {
             print("swipe Left")
             if newsGroupPointer < newsGroups.count - 1 {
@@ -214,7 +203,7 @@ class ViewController: UIViewController {
     
 }
 
-//MainPageViewModelDelegate
+// Mark: - MainPageViewModelDelegate
 extension ViewController: MainPageViewModelDelegate {
     func viewModel(_ viewModel: MainPageViewModel, didUpdateMainPageData data: [NewsContent]) {
         if notInitTableViewYet > 0 {
@@ -231,14 +220,14 @@ extension ViewController: MainPageViewModelDelegate {
     
 }
 
-//CollectionView DataSource
+// Mark: - UICollectionViewDataSource
 extension ViewController: UICollectionViewDataSource {
-    //获取分区数
+    //分區數量
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
-    //获取每个分区里单元格数量
+    //每個分區單元元素數量
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
         if collectionView == self.imageGalleryCollectionView {
@@ -252,13 +241,12 @@ extension ViewController: UICollectionViewDataSource {
         return 5
     }
     
-    //返回每个单元格视图
+    //得到單元元素view
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == self.newsGroupCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier:
                 NewsGroupCellID, for: indexPath) as! NewsGroupCollectionViewCell
-            //设置内部显示的图片
             cell.titleLabel.text = newsGroups[indexPath.row]
             cell.titleLabel.textColor = .gray
             if indexPath.row == newsGroupPointer {
@@ -266,7 +254,6 @@ extension ViewController: UICollectionViewDataSource {
             }else{
                 cell.titleLabel.textColor = .gray
             }
-            //获取重用的单元格
             return cell
         }else{
             let content = (viewModel.newsByGroup[newsGroupPointer])[indexPath.row]
@@ -287,7 +274,7 @@ extension ViewController: UICollectionViewDataSource {
     }
 }
 
-//Collection View样式布局协议相关方法
+// Mark: - UICollectionViewDelegate
 extension ViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("Did select element: \(indexPath.row)")
@@ -300,28 +287,7 @@ extension ViewController: UICollectionViewDelegate {
             webView.mainViewController = self
             show(webView, sender: self)
         }
-//        cell?.backgroundColor = .yellow
-//        cell?.backgroundView?.backgroundColor = .yellow
-//        cell?.contentView.layer.borderWidth = 2.0
-//        cell?.contentView.layer.borderColor = UIColor.yellow.cgColor
-//        cell?.layer.borderWidth = 2.0
-//        cell?.layer.borderColor = UIColor.yellow.cgColor
     }
-    
-    
-    
-    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
-        print("Highlighting at: \(indexPath.row)")
-        //如何透過滑動collectionView來連動pageController的顯示？
-        
-        if collectionView == self.newsGroupCollectionView {
-//            newsGroupPointer = indexPath.row
-//            tableView.reloadData()
-        }else if collectionView == self.imageGalleryCollectionView {
-        
-        }
-    }
-    
 }
 
 // Mark: - UITableViewDelegate
@@ -384,15 +350,12 @@ extension ViewController: UITableViewDataSource {
         pagerView.currentPage = 0
         pagerView.tag = 400
         returnUIView.addSubview(pagerView)
-//        returnUIView.backgroundColor = .yellow
         return returnUIView
-//        return imageGalleryCollectionView
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offSet = scrollView.contentOffset.x
         let width = scrollView.frame.width
-//        let horizontalCenter = width / 2
         
         if let pageControlViewWithTag = self.tableView.viewWithTag(400) as? UIPageControl {
             pageControlViewWithTag.currentPage = Int(offSet) / Int(width)
@@ -402,11 +365,6 @@ extension ViewController: UITableViewDataSource {
             print("Can't bind pager")
         }
     }
-    
-//    private func tableView(tableView: UITableView,
-//                   heightForHeaderInSection section: Int) -> CGFloat {
-//        return 100
-//    }
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -418,7 +376,7 @@ extension ViewController: UITableViewDataSource {
                 return 0
             }
         }
-        //減五的原因是前面五則新聞方放在header裡面的CollectionView
+        //減五的原因是前面五則新聞放在header裡面的CollectionView
         return viewModel.contents.count - 5
     }
 }
